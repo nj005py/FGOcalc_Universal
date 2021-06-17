@@ -19,7 +19,7 @@ class _svtList extends State<SvtList>{
   }
 
   List<Widget> buildGridTileList(int number) {
-    List<Widget> widgetList = new List();
+    List<Widget> widgetList = [];
     for (int i = 0; i < number; i++) {
       widgetList.add(getItemWidget(i));
     }

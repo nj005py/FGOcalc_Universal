@@ -41,6 +41,7 @@ class DrawerBuilder {
         accountName: new Text(
           "FGOcalc Flutter",
         ),
+        accountEmail: Text("ddd@hotmail.com"),
         currentAccountPicture: new CircleAvatar(
           backgroundImage: new AssetImage("assets/logo_guda.png"),
         ),
