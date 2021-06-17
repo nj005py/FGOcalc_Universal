@@ -1,6 +1,6 @@
+import 'package:fgocalc_unisersal/page/servant_filter_page.dart';
+import 'package:fgocalc_unisersal/page/servant_list_page.dart';
 import 'package:flutter/material.dart';
-import 'drawer_page.dart';
-import 'svt_list.dart';
 
 void main() => runApp(new MyApp());
 
@@ -9,51 +9,41 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'FGOcalc Flutter Demo',
+      title: 'FGOcalc',
       theme: new ThemeData(
         primarySwatch: Colors.blue,
-        primaryColor: Colors.blueGrey,
+        primaryColor: Colors.indigo,
       ),
-      home: new MyHomePage(),
+      home: new MainPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-
-
-  @override
-  _MyHomePageState createState() => new _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-    });
-  }
+class MainPage extends StatelessWidget {
+  final List<Tab> tabs = <Tab>[
+    Tab(text: "搜索",),
+    Tab(text: "筛选",),
+    Tab(text: "设置",),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("widget.title"),
-      ),
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              child: SvtList(),
-            ),
-          ],
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: TabBar(
+            tabs: tabs,
+            indicatorColor: Colors.orangeAccent,
+          ),
         ),
+        body: TabBarView(children: [
+          ServantListPage(),
+          ServantFilterPage.origin("2", x:2),
+          ServantFilterPage("3")
+        ]),
       ),
-      drawer: new Drawer(
-        child: DrawerBuilder.drawerBuilder(),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
+
