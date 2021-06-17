@@ -1,5 +1,9 @@
 name: fgocalc_flutter
-description: A Flutter version of FGOcalc
+description: An unisersal version of FGOcalc powered by Flutter
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+version: 1.0.0+1
+environment:
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -7,7 +11,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
+  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:
