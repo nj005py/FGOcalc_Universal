@@ -1,8 +1,11 @@
+import 'package:fgocalc_unisersal/entity/GroupMember.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/all.dart';
 
 
 final _myListKey = GlobalKey<AnimatedListState>();
+final memberProvider = Provider<List<GroupMember>>((ref){});
 class GroupCalcPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
