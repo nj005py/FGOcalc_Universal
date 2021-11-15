@@ -1,21 +1,80 @@
-import 'package:fgocalc_unisersal/entity/GroupMember.dart';
+import 'package:fgocalc_unisersal/entity/group_member.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/all.dart';
 
+// final _myListKey = GlobalKey<AnimatedListState>();
+// final memberProvider = Provider<List<GroupMember>>((ref){});
+final List<GroupMemberVO> _members = [];
+final StateProvider<List<GroupMemberVO>> _memberProvider = StateProvider((
+    ref) => []);
 
-final _myListKey = GlobalKey<AnimatedListState>();
-final memberProvider = Provider<List<GroupMember>>((ref){});
-class GroupCalcPage extends StatelessWidget {
+class GroupCalcPage extends ConsumerWidget {
+  final List<String> _texts = [];
+  final StateProvider<int> _lengthProvider = StateProvider((ref) => 0);
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ScopedReader watch) {
+    //添加编队成员
+    final btnAddMember = SizedBox(
+      height: 55.0,
+      child: InkWell(
+        onTap: () {
+          if (_members.length < 3){
+            _members.add(GroupMemberVO());
+            context.read(_memberProvider).state = _members;
+          }
+        },
+        child: Card(
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
+          child: Center(
+            child: Icon(
+              Icons.add,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    //编队成员列表
+    final lvMembers = ListView.builder(
+      shrinkWrap: true,
+      itemCount: (watch(_memberProvider).state.length + 1) < 3 ? watch(_memberProvider).state.length + 1 : 3,
+      itemBuilder: (context, index) {
+        int size = _members.length;
+        if(size == index){
+          return btnAddMember;
+        } else {
+          return TileMember(index);
+        }
+      },
+    );
+
+    //已选指令卡
+    final lvChosenCards = ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 3,
+        itemBuilder: (context, index) {
+          return SizedBox(width: 58.0,
+              height: 58.0,
+              child: Image.asset("assets/quick.webp"));
+        });
+
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           //按钮
           Container(
-            color: Theme.of(context).primaryColor,
+            color: Theme
+                .of(context)
+                .primaryColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -23,7 +82,7 @@ class GroupCalcPage extends StatelessWidget {
                   flex: 1,
                   child: TextButton(
                     onPressed: () {
-                      _myListKey.currentState!.insertItem(0);
+                      // _myListKey.currentState!.insertItem(0);
                     },
                     style: ButtonStyle(),
                     child: Text('计算', style: TextStyle(color: Colors.white)),
@@ -34,7 +93,7 @@ class GroupCalcPage extends StatelessWidget {
                   child: TextButton(
                       onPressed: () {},
                       child:
-                          Text('清理结果', style: TextStyle(color: Colors.white))),
+                      Text('清理结果', style: TextStyle(color: Colors.white))),
                 ),
               ],
             ),
@@ -68,11 +127,82 @@ class GroupCalcPage extends StatelessWidget {
             height: 1,
           ),
           //添加编队成员
-          ListView.builder(itemBuilder: (context, index) => ,)
+          // Expanded(child: listView),
+          Wrap(children: [lvMembers]),
           //overkill
           //暴击
-          //计算结果提示
+          //选择卡片
+          SizedBox(
+            height: 58.0,
+            child: Row(
+              children: [
+                lvChosenCards,//todo
+                // Image.asset("assets/extra.webp",width: 58.0,height: 58.0,)
+              ],
+            ),
+          ),
           //计算结果展示
+        ],
+      ),
+    );
+  }
+}
+
+class TileMember extends ConsumerWidget{
+  int index = 0;
+
+  TileMember(this.index);
+
+  @override
+  Widget build(BuildContext context, ScopedReader watch) {
+    final lvCards = ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 6,
+        itemBuilder: (context, index) {
+          return SizedBox(width: 58.0,
+              height: 58.0,
+              child: Image.asset("assets/quick.webp"));
+        });
+
+    return Card(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              GestureDetector(
+                onTap: (){
+                  _members.removeAt(index);
+                  context.read(_memberProvider).state = _members;
+                },
+                child: Image.asset(
+                  "assets/image1.webp",
+                  width: 60.0,
+                  height: 60.0,
+                ),
+              ),
+              Expanded(
+                child: InkWell(
+                  child: Container(
+                    padding: EdgeInsets.only(left: 5.0, right: 15.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text("详细设置"),
+                        Image.asset(
+                          'assets/ic_more.webp',
+                          width: 10.0,
+                          height: 24.0,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+          //指令卡
+          SizedBox(height: 58.0, child: lvCards),
         ],
       ),
     );
