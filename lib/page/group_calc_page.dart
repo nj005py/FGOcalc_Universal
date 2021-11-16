@@ -1,4 +1,5 @@
 import 'package:fgocalc_unisersal/entity/group_member.dart';
+import 'package:fgocalc_unisersal/widget/check_tag.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -7,13 +8,10 @@ import 'package:flutter_riverpod/all.dart';
 // final _myListKey = GlobalKey<AnimatedListState>();
 // final memberProvider = Provider<List<GroupMember>>((ref){});
 final List<GroupMemberVO> _members = [];
-final StateProvider<List<GroupMemberVO>> _memberProvider = StateProvider((
-    ref) => []);
+final StateProvider<List<GroupMemberVO>> _memberProvider =
+    StateProvider((ref) => []);
 
 class GroupCalcPage extends ConsumerWidget {
-  final List<String> _texts = [];
-  final StateProvider<int> _lengthProvider = StateProvider((ref) => 0);
-
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     //添加编队成员
@@ -21,7 +19,7 @@ class GroupCalcPage extends ConsumerWidget {
       height: 55.0,
       child: InkWell(
         onTap: () {
-          if (_members.length < 3){
+          if (_members.length < 3) {
             _members.add(GroupMemberVO());
             context.read(_memberProvider).state = _members;
           }
@@ -33,9 +31,7 @@ class GroupCalcPage extends ConsumerWidget {
           child: Center(
             child: Icon(
               Icons.add,
-              color: Theme
-                  .of(context)
-                  .primaryColor,
+              color: Theme.of(context).primaryColor,
             ),
           ),
         ),
@@ -45,10 +41,12 @@ class GroupCalcPage extends ConsumerWidget {
     //编队成员列表
     final lvMembers = ListView.builder(
       shrinkWrap: true,
-      itemCount: (watch(_memberProvider).state.length + 1) < 3 ? watch(_memberProvider).state.length + 1 : 3,
+      itemCount: (watch(_memberProvider).state.length + 1) < 3
+          ? watch(_memberProvider).state.length + 1
+          : 3,
       itemBuilder: (context, index) {
         int size = _members.length;
-        if(size == index){
+        if (size == index) {
           return btnAddMember;
         } else {
           return TileMember(index);
@@ -56,15 +54,43 @@ class GroupCalcPage extends ConsumerWidget {
       },
     );
 
+    //overkill
+    final rowOverkill = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CheckTag("overkill"),
+        CheckTag("overkill"),
+        CheckTag("overkill"),
+        CheckTag("overkill"),
+      ],
+    );
+    //暴击
+
     //已选指令卡
-    final lvChosenCards = ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 3,
-        itemBuilder: (context, index) {
-          return SizedBox(width: 58.0,
-              height: 58.0,
-              child: Image.asset("assets/quick.webp"));
-        });
+    final lvChosenCards = ListView.separated(
+      scrollDirection: Axis.horizontal,
+      itemCount: 3,
+      itemBuilder: (context, index) {
+        return Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            SizedBox(
+                width: 58.0,
+                height: 58.0,
+                child: Image.asset("assets/quick.webp")),
+            SizedBox(
+              width: 29.0,
+              height: 29.0,
+              child: Image.asset('assets/image1.webp'),
+            ),
+          ],
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        final width = MediaQuery.of(context).size.width;
+        final x = (width - (60.0 * 4) - (15.0 * 2)) / 3;
+        return Divider(indent: x,);},
+    );
 
     return Scaffold(
       body: Column(
@@ -72,9 +98,7 @@ class GroupCalcPage extends ConsumerWidget {
         children: [
           //按钮
           Container(
-            color: Theme
-                .of(context)
-                .primaryColor,
+            color: Theme.of(context).primaryColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -93,7 +117,7 @@ class GroupCalcPage extends ConsumerWidget {
                   child: TextButton(
                       onPressed: () {},
                       child:
-                      Text('清理结果', style: TextStyle(color: Colors.white))),
+                          Text('清理结果', style: TextStyle(color: Colors.white))),
                 ),
               ],
             ),
@@ -129,18 +153,30 @@ class GroupCalcPage extends ConsumerWidget {
           //添加编队成员
           // Expanded(child: listView),
           Wrap(children: [lvMembers]),
-          //overkill
-          //暴击
           //选择卡片
-          SizedBox(
-            height: 58.0,
+          Padding(
+            padding: const EdgeInsets.only(left: 15.0,right: 15.0),
             child: Row(
               children: [
-                lvChosenCards,//todo
-                // Image.asset("assets/extra.webp",width: 58.0,height: 58.0,)
+                Flexible(
+                    flex: 4,
+                    child: SizedBox(
+                        width: double.infinity,
+                        height: 58.0,
+                        child: lvChosenCards)),
+                Flexible(
+                    flex: 1,
+                    child: Image.asset(
+                      "assets/extra.webp",
+                      width: 58.0,
+                      height: 58.0,
+                    ))
               ],
             ),
           ),
+          //overkill
+          SizedBox(width:double.infinity,child: rowOverkill),
+          //暴击
           //计算结果展示
         ],
       ),
@@ -148,7 +184,7 @@ class GroupCalcPage extends ConsumerWidget {
   }
 }
 
-class TileMember extends ConsumerWidget{
+class TileMember extends ConsumerWidget {
   int index = 0;
 
   TileMember(this.index);
@@ -159,7 +195,8 @@ class TileMember extends ConsumerWidget{
         scrollDirection: Axis.horizontal,
         itemCount: 6,
         itemBuilder: (context, index) {
-          return SizedBox(width: 58.0,
+          return SizedBox(
+              width: 58.0,
               height: 58.0,
               child: Image.asset("assets/quick.webp"));
         });
@@ -171,7 +208,7 @@ class TileMember extends ConsumerWidget{
           Row(
             children: [
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   _members.removeAt(index);
                   context.read(_memberProvider).state = _members;
                 },
