@@ -1,3 +1,4 @@
+import 'package:fgocalc_unisersal/entity/group_calc.dart';
 import 'package:fgocalc_unisersal/entity/group_member.dart';
 import 'package:fgocalc_unisersal/widget/check_tag.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,10 @@ final StateProvider<List<GroupMemberVO>> _memberProvider =
     StateProvider((ref) => []);
 
 class GroupCalcPage extends ConsumerWidget {
+  bool isCritical = false;
+  final StateProvider<bool> isCriticalProvider = StateProvider((ref) => false);
+  final StateProvider<GroupCalcVO> groupCalcVOProvider = StateProvider((ref) => GroupCalcVO());
+
   @override
   Widget build(BuildContext context, ScopedReader watch) {
     //添加编队成员
@@ -58,13 +63,71 @@ class GroupCalcPage extends ConsumerWidget {
     final rowOverkill = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        CheckTag("overkill"),
-        CheckTag("overkill"),
-        CheckTag("overkill"),
-        CheckTag("overkill"),
+        CheckTag(
+            value: watch(groupCalcVOProvider).state.isOverkill1,
+            title: "overkill",
+            onChanged: (value) {
+              final vo = context.read(groupCalcVOProvider).state;
+              vo.isOverkill1 = value!;
+              context.read(groupCalcVOProvider).state = vo;
+            }),
+        CheckTag(
+            value: watch(groupCalcVOProvider).state.isOverkill2,
+            title: "overkill",
+            onChanged: (value) {
+              final vo = context.read(groupCalcVOProvider).state;
+              vo.isOverkill2 = value!;
+              context.read(groupCalcVOProvider).state = vo;
+            }),
+        CheckTag(
+            value: watch(groupCalcVOProvider).state.isOverkill3,
+            title: "overkill",
+            onChanged: (value) {
+              final vo = context.read(groupCalcVOProvider).state;
+              vo.isOverkill3 = value!;
+              context.read(groupCalcVOProvider).state = vo;
+            }),
+        CheckTag(
+            value: watch(groupCalcVOProvider).state.isOverkill4,
+            title: "overkill",
+            onChanged: (value) {
+              final vo = context.read(groupCalcVOProvider).state;
+              vo.isOverkill4 = value!;
+              context.read(groupCalcVOProvider).state = vo;
+            }),
       ],
     );
     //暴击
+    final rowCritical = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CheckTag(
+            value: watch(groupCalcVOProvider).state.isCritical1,
+            title: "暴击",
+            onChanged: (value) {
+              final vo = context.read(groupCalcVOProvider).state;
+              vo.isCritical1 = value!;
+              context.read(groupCalcVOProvider).state = vo;
+            }),
+        CheckTag(
+            value: watch(groupCalcVOProvider).state.isCritical2,
+            title: "暴击",
+            onChanged: (value) {
+              final vo = context.read(groupCalcVOProvider).state;
+              vo.isCritical2 = value!;
+              context.read(groupCalcVOProvider).state = vo;
+            }),
+        CheckTag(
+            value: watch(groupCalcVOProvider).state.isCritical3,
+            title: "暴击",
+            onChanged: (value) {
+              final vo = context.read(groupCalcVOProvider).state;
+              vo.isCritical3 = value!;
+              context.read(groupCalcVOProvider).state = vo;
+            }),
+        Flexible(flex:1,child: Container())
+      ],
+    );
 
     //已选指令卡
     final lvChosenCards = ListView.separated(
@@ -89,7 +152,10 @@ class GroupCalcPage extends ConsumerWidget {
       separatorBuilder: (BuildContext context, int index) {
         final width = MediaQuery.of(context).size.width;
         final x = (width - (60.0 * 4) - (15.0 * 2)) / 3;
-        return Divider(indent: x,);},
+        return Divider(
+          indent: x,
+        );
+      },
     );
 
     return Scaffold(
@@ -155,7 +221,7 @@ class GroupCalcPage extends ConsumerWidget {
           Wrap(children: [lvMembers]),
           //选择卡片
           Padding(
-            padding: const EdgeInsets.only(left: 15.0,right: 15.0),
+            padding: const EdgeInsets.only(left: 15.0, right: 15.0),
             child: Row(
               children: [
                 Flexible(
@@ -175,8 +241,9 @@ class GroupCalcPage extends ConsumerWidget {
             ),
           ),
           //overkill
-          SizedBox(width:double.infinity,child: rowOverkill),
+          SizedBox(width: double.infinity, child: rowOverkill),
           //暴击
+          rowCritical
           //计算结果展示
         ],
       ),
